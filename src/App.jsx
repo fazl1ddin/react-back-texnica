@@ -18,7 +18,7 @@ function App() {
 
   return <>
     {
-      loading ? <div>nasnasasjsajsaassa</div> : null
+      loading ? <BaseLoader width={'100%'} height={'100vh'} circlewidth={200} circleHeight={200}/> : null
     }
     <div className={loading ? "hidden" : ""}>
       {
