@@ -7,7 +7,6 @@ const onRequest = (config) => {
     config.baseURL = `http://localhost:3002/`;
 
     config.headers = {
-        'Access-Control-Allow-Origin': '*'
     }
     
     return config;

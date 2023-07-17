@@ -18,28 +18,21 @@ function App() {
 
   return <>
     {
-      loading ? <BaseLoader width={'100%'} height={'100vh'} circlewidth={200} circleHeight={200}/> : null
-    }
-    <div className={loading ? "hidden" : ""}>
-      {
-        user === undefined ? 
-        <div className="App">
-          <RouterProvider router={public_routes}/>
-        </div> :
+      loading ? <BaseLoader width={'100%'} height={'100vh'} circlewidth={200} circleHeight={200} /> :
+      user === undefined ? 
+        <RouterProvider fallbackElement={<BaseLoader
+          width={"100%"}
+          height={"100vh"}
+          circlewidth={200}
+          circleHeight={200}
+        />} router={public_routes} />
+        :
         <Layout>
-            <Layout.Header>
-              header
-              <BaseLoader width={400} height={ 400} />
-          </Layout.Header>
-          <Layout>
-            <Layout.Sider>left sidebar</Layout.Sider>
-            <Layout.Content>main content</Layout.Content>
-            <Layout.Sider>right sidebar</Layout.Sider>
-          </Layout>
-          <Layout.Footer>footer</Layout.Footer>
+          <Layout.Sider className='fixed left-0 top-0 h-full' width={'24rem'}>
+          </Layout.Sider>
+          <Layout.Content className='ml-96 p-2 h-screen'>main content</Layout.Content>
         </Layout>
-      }
-    </div>
+    }
   </>
 }
 
