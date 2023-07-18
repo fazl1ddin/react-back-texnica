@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import instance from "../Config/api";
 import { notification } from "antd";
+import Cookies from "js-cookie";
 
 export const UserLogin = createAsyncThunk(
     'UserLogin',
@@ -13,7 +14,7 @@ export const UserLogin = createAsyncThunk(
                 withCredentials: true
             });
             return {
-                data: response.data
+                data: response.data,
             };
         } catch (error) {
             return rejectWithValue({
@@ -77,7 +78,7 @@ export const user = createSlice({
             .addCase(UserMe.pending, (state) => {
                 state.loading = true
             })
-            .addCase(UserMe.fulfilled, (state, { payload: { data } }) => {
+            .addCase(UserMe.fulfilled, (state, { payload: { data, token } }) => {
                 state.loading = false
                 state.user = data
             })
@@ -86,6 +87,7 @@ export const user = createSlice({
                 notification.error({
                     message: data.message
                 })
+                if(data.message === "token expired") Cookies.remove('token')
             })
     }
 })

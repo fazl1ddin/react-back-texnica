@@ -1,24 +1,21 @@
-import { createBrowserRouter, defer } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import Login from "../Pages/Login/Login";
-import { storeUser } from "../Store";
-import { UserMe } from "../Store/user";
+import React from "react";
 
 export const public_routes = createBrowserRouter([
     {
         path: '*',
-        element: <div>404</div>,
-        loader: undefined,
+        element: <div>404</div>
         
     },
     {
         path: '/',
-        element: <Login />,
-        loader: async () => {
-            if (document.cookie.includes('token')) {
-                console.log('1');
-                return defer({data: storeUser.dispatch(UserMe())})
-            }
-            return null
-        },
+        element: <Login/>
+    }
+])
+
+export const private_routes = createBrowserRouter([
+    {
+        path: '/',
     }
 ])
