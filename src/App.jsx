@@ -11,7 +11,6 @@ import Cookies from "js-cookie";
 function App() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(undefined);
-  const [first, setFirst] = useState(false)
 
   storeUser.subscribe(() => {
     const { user, loading } = storeUser.getState();
@@ -19,16 +18,10 @@ function App() {
     setUser(user);
   });
 
-  console.log(user, loading);
-
   useLayoutEffect(() => {
-    if (first === false) {
-      console.log(first);
-      (async () => {
-        if (Cookies.get("token")) await storeUser.dispatch(UserMe());
-      })();
-    }
-    setFirst(true)
+    (async () => {
+      if (Cookies.get("token")) await storeUser.dispatch(UserMe());
+    })();
   }, []);
 
   return (
