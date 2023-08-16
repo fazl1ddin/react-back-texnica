@@ -71,7 +71,9 @@ export const user = createSlice({
             })
             .addCase(UserLogin.rejected, (state, { payload: { data, status } }) => {
                 state.loading = false
-                // return 'ok'
+                notification.error({
+                    message: data
+                })
             })
             .addCase(UserMe.pending, (state) => {
                 state.loading = true
@@ -82,9 +84,9 @@ export const user = createSlice({
             })
             .addCase(UserMe.rejected, (state, { payload: { data, status } }) => {
                 state.loading = false
-                // notification.error({
-                //     message: data.message
-                // })
+                notification.error({
+                    message: data.message
+                })
                 if(data.message === "token expired") Cookies.remove('token')
             })
     }

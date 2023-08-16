@@ -4,7 +4,11 @@ import "./App.css";
 import { private_routes, public_routes } from "./Router";
 import { storeUser } from "./Store";
 import BaseLoader from "./Components/Loaders/BaseLoader";
-import { RouterProvider } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Routes,
+} from "react-router-dom";
 import { UserMe } from "./Store/user";
 import Cookies from "js-cookie";
 
@@ -28,21 +32,36 @@ function App() {
     <>
       {loading ? (
         <BaseLoader
-          width={"10%"}
-          height={"10vh"}
+          width={"100%"}
+          height={"100vh"}
           circlewidth={200}
           circleHeight={200}
         />
       ) : user === undefined ? (
-        <RouterProvider router={public_routes} />
+        <Routes>
+          {public_routes.map((item, index) => (
+            <Route key={index} element={item.element} path={item.path}></Route>
+          ))}
+        </Routes>
       ) : (
         <Layout>
-          <Layout.Sider
-            className="fixed left-0 top-0 h-full"
-            width={"24rem"}
-          ></Layout.Sider>
+          <Layout.Sider className="fixed left-0 top-0 h-full" width={"24rem"}>
+            {private_routes.map((item, index) => (
+              <Link
+                key={index}
+                to={item.path}
+                className="text-white p-2 text-2xl"
+              >
+                {item.title}
+              </Link>
+            ))}
+          </Layout.Sider>
           <Layout.Content className="ml-96 p-2 h-screen">
-            <RouterProvider router={private_routes} />
+            <Routes>
+              {private_routes.map((item, index) => (
+                <Route key={index} element={item.element} path={item.path}></Route>
+              ))}
+            </Routes>
           </Layout.Content>
         </Layout>
       )}

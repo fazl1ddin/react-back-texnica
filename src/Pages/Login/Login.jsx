@@ -1,21 +1,16 @@
-import { Button, Form, Input, message, notification } from "antd";
+import { Button, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import React, { useState } from "react";
 import { storeUser } from "../../Store";
 import { UserLogin } from "../../Store/user";
-import BaseLoader from "../../Components/Loaders/BaseLoader";
 
 function Login() {
   const [form] = useForm();
-  const [not, contextHolder] = message.useMessage();
 
   const [disable, setDisable] = useState(false);
 
   const onFinish = async (values) => {
-    const res = await storeUser.dispatch(UserLogin(values));
-    // if (res.type === "UserLogin/rejected" ) {
-    //   not.error({ message: res.error.message });
-    // }
+    await storeUser.dispatch(UserLogin(values));
     setDisable(
       Boolean(
         form.getFieldsError().filter((item) => item.errors.length !== 0).length
@@ -25,7 +20,6 @@ function Login() {
 
   return (
     <>
-      {contextHolder}
       <div className="flex items-center justify-center w-full h-screen">
         <div className="w-1/6">
           <p className="text-center text-2xl m-8">Welcome Back</p>
@@ -62,7 +56,6 @@ function Login() {
                 className="bg-default w-full h-10"
                 disabled={disable}
                 htmlType="submit"
-                onClick={() => not.error({ message: 'res.error.message' })}
               >
                 Login
               </Button>
