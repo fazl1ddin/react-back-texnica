@@ -12,6 +12,7 @@ root.render(
       theme={{
         colorPrimary: configStyles.defaultColorBg,
       }}
+      
     >
       <App/>
     </ConfigProvider>

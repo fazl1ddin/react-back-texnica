@@ -28,8 +28,8 @@ function App() {
     <>
       {loading ? (
         <BaseLoader
-          width={"100%"}
-          height={"100vh"}
+          width={"10%"}
+          height={"10vh"}
           circlewidth={200}
           circleHeight={200}
         />
