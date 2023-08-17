@@ -3,6 +3,8 @@ import PageTitle from "../../Components/PageTitle/PageTitle";
 import moment from "moment/moment";
 import { Link } from "react-router-dom"
 import ImgXHR from "../../Components/Img/ImgXHR";
+import useGetDatas from "../../Hooks/getData/getDatas";
+import BaseLoader from "../../Components/Loaders/BaseLoader";
 
 const columns = [
   Table.EXPAND_COLUMN,
@@ -220,8 +222,9 @@ const dataSource = [
 ];
 
 function Orders({ title }) {
-  return (
-    <>
+  const {data: orders, loading} = useGetDatas('/all-orders')
+
+  return <>
       <PageTitle title={title} />
       <Table
         expandable={{
@@ -234,12 +237,12 @@ function Orders({ title }) {
               >
                 {`First name : ${record.getter.first_name}. Last name: ${record.getter.last_name}. Tel: ${record.getter.phone_number}. Email: ${record.getter.email}`}
               </p>
-              {record.type === "deliv"
+              {record.type === 0
                 ? record.dateDeliv
                 : `${record.address.city} ${record.address.shop}`}
               <div className="flex">
                 {record.products.map((item) => (
-                  <Link to={`/product/${item._id}`}>
+                  <Link to={`/product/${item}`}>
                     <ImgXHR />
                   </Link>
                 ))}
@@ -249,14 +252,13 @@ function Orders({ title }) {
         }}
         bordered
         sticky
+        loading={loading}
         rowKey={"_id"}
         columns={columns}
-        dataSource={dataSource}
+        dataSource={orders}
         pagination={false}
       ></Table>
-      <ImgXHR src={'image-18.png'}/>
     </>
-  );
 }
 
 export default Orders;
