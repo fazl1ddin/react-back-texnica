@@ -12,6 +12,9 @@ module.exports = {
         'default': configStyles.defaultColorBg
       },
       textColor: {
+        'default': configStyles.defaultColorText
+      },
+      colors: {
         'default': configStyles.defaultColor
       }
     },

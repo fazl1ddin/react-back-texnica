@@ -1,6 +1,6 @@
 import Login from "../Pages/Login/Login";
 import React from "react";
-import Home from "../Pages/Home/Home";
+import Orders from "../Pages/Orders/Orders";
 
 export const public_routes = [
     {
@@ -17,7 +17,7 @@ export const public_routes = [
 export const private_routes = [
     {
         path: '/',
-        element: <Home />,
-        title: 'Home'
+        element: <Orders />,
+        title: 'Orders'
     }
 ]

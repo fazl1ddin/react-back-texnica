@@ -4,11 +4,7 @@ import "./App.css";
 import { private_routes, public_routes } from "./Router";
 import { storeUser } from "./Store";
 import BaseLoader from "./Components/Loaders/BaseLoader";
-import {
-  Link,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { NavLink, Outlet, Route, Routes } from "react-router-dom";
 import { UserMe } from "./Store/user";
 import Cookies from "js-cookie";
 
@@ -44,26 +40,44 @@ function App() {
           ))}
         </Routes>
       ) : (
-        <Layout>
-          <Layout.Sider className="fixed left-0 top-0 h-full" width={"24rem"}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <Layout.Sider
+                  className="fixed left-0 top-0 h-full"
+                  width={"24rem"}
+                >
+                  {private_routes.map((item, index) => (
+                    <NavLink
+                      key={index}
+                      to={item.path}
+                      className={({ isActive }) =>
+                        `text-white p-2 text-2xl block hover:bg-gray-400 ${
+                          isActive ? "bg-gray-400" : ""
+                        }`
+                      }
+                    >
+                      {item.title}
+                    </NavLink>
+                  ))}
+                </Layout.Sider>
+                <Layout.Content className="ml-96 p-2 h-screen">
+                  <Outlet />
+                </Layout.Content>
+              </Layout>
+            }
+          >
             {private_routes.map((item, index) => (
-              <Link
+              <Route
                 key={index}
-                to={item.path}
-                className="text-white p-2 text-2xl"
-              >
-                {item.title}
-              </Link>
+                element={{ ...item.element, props: { title: item.title } }}
+                path={item.path}
+              ></Route>
             ))}
-          </Layout.Sider>
-          <Layout.Content className="ml-96 p-2 h-screen">
-            <Routes>
-              {private_routes.map((item, index) => (
-                <Route key={index} element={item.element} path={item.path}></Route>
-              ))}
-            </Routes>
-          </Layout.Content>
-        </Layout>
+          </Route>
+        </Routes>
       )}
     </>
   );
