@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from "react";
 import instance from "../../Config/api/index";
 
-function useGetDatas(url, refetch = [], call = true) {
+function useGetProducts(url, body = [], call = true, refetch = []) {
   const [data, setdata] = useState([]);
   const [loading, setloading] = useState(true);
 
@@ -10,7 +10,11 @@ function useGetDatas(url, refetch = [], call = true) {
       (async () => {
         setloading(true);
         try {
-          const res = await instance({ url, method: "GET" });
+          const res = await instance({
+            url,
+            method: "POST",
+            data: body,
+          });
           setdata(res.data);
         } catch (error) {
           console.log(error);
@@ -27,4 +31,4 @@ function useGetDatas(url, refetch = [], call = true) {
   };
 }
 
-export default useGetDatas;
+export default useGetProducts;

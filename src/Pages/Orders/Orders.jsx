@@ -4,7 +4,7 @@ import moment from "moment/moment";
 import { Link } from "react-router-dom"
 import ImgXHR from "../../Components/Img/ImgXHR";
 import useGetDatas from "../../Hooks/getData/getDatas";
-import BaseLoader from "../../Components/Loaders/BaseLoader";
+import useGetProducts from "../../Hooks/getData/getProducts";
 
 const columns = [
   Table.EXPAND_COLUMN,
@@ -222,7 +222,9 @@ const dataSource = [
 ];
 
 function Orders({ title }) {
-  const {data: orders, loading} = useGetDatas('/all-orders')
+  const { data: orders, loading } = useGetDatas('/all-orders')
+  console.log((orders.length && loading === false));
+  const {data: products, ploading} = useGetProducts('/get-products', [], (orders.length && loading === false))
 
   return <>
       <PageTitle title={title} />
@@ -243,7 +245,7 @@ function Orders({ title }) {
               <div className="flex">
                 {record.products.map((item) => (
                   <Link to={`/product/${item}`}>
-                    <ImgXHR />
+                    <ImgXHR src={item}/>
                   </Link>
                 ))}
               </div>

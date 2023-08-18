@@ -10,8 +10,7 @@ export const UserLogin = createAsyncThunk(
             const response = await instance({
                 url: 'login',
                 method: 'POST',
-                data: data,
-                withCredentials: true
+                data: data
             });
             return {
                 data: response.data,
@@ -31,8 +30,7 @@ export const UserMe = createAsyncThunk(
         try {
             const response = await instance({
                 url: '/me',
-                method: 'get',
-                withCredentials: true
+                method: 'get'
             })
             return {
                 data: response.data
