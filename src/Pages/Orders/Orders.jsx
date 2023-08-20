@@ -223,7 +223,6 @@ const dataSource = [
 
 function Orders({ title }) {
   const { data: orders, loading } = useGetDatas('/all-orders')
-  console.log((orders.length && loading === false));
   const {data: products, ploading} = useGetProducts('/get-products', [], (orders.length && loading === false))
 
   return <>

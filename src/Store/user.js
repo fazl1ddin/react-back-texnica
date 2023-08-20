@@ -29,7 +29,7 @@ export const UserMe = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         try {
             const response = await instance({
-                url: '/me',
+                url: 'login',
                 method: 'get'
             })
             return {
@@ -63,9 +63,12 @@ export const user = createSlice({
             .addCase(UserLogin.pending, (state) => {
                 state.loading = true
             })
-            .addCase(UserLogin.fulfilled, (state, { payload: { data } }) => {
+            .addCase(UserLogin.fulfilled, (state, { payload: { data: {message, data: user} } }) => {
                 state.loading = false
-                state.user = data
+                notification.success({
+                    message
+                })
+                state.user = user
             })
             .addCase(UserLogin.rejected, (state, { payload: { data, status } }) => {
                 state.loading = false
