@@ -83,12 +83,12 @@ export const user = createSlice({
                 state.loading = false
                 state.user = data
             })
-            .addCase(UserMe.rejected, (state, { payload: { data, status } }) => {
+            .addCase(UserMe.rejected, (state, { payload: { data: {message, status}, status: statusCode } }) => {
                 state.loading = false
                 notification.error({
-                    message: data.message
+                    message: message
                 })
-                if(data.message === "token expired") Cookies.remove('token')
+                if(message === "Token expired" || status === 0 || statusCode === 401) Cookies.remove('token')
             })
     }
 })
