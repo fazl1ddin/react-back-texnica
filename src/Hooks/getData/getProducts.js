@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from "react";
 import instance from "../../Config/api/index";
 
-function useGetProducts(url, body = [], call = true, refetch = []) {
+function useGetProducts(url, body = [], call = true, params = {}, refetch = []) {
   const [data, setdata] = useState([]);
   const [loading, setloading] = useState(true);
 
@@ -13,9 +13,14 @@ function useGetProducts(url, body = [], call = true, refetch = []) {
           const res = await instance({
             url,
             method: "POST",
-            data: body,
+            data: JSON.stringify(body),
+            params
           });
-          setdata(res.data);
+          if (res.data.success === 1) {
+            setdata(res.data.data);
+          } else {
+            throw new Error('Success is not 1')
+          }
         } catch (error) {
           console.log(error);
         } finally {

@@ -11,7 +11,11 @@ function useGetDatas(url, refetch = [], call = true) {
         setloading(true);
         try {
           const res = await instance({ url, method: "GET" });
-          setdata(res.data);
+          if (res.data.success === 1) {
+            setdata(res.data.data);
+          } else {
+            throw new Error('Success is not 1')
+          }
         } catch (error) {
           console.log(error);
         } finally {

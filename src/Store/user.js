@@ -63,14 +63,14 @@ export const user = createSlice({
             .addCase(UserLogin.pending, (state) => {
                 state.loading = true
             })
-            .addCase(UserLogin.fulfilled, (state, { payload: { data: {message, data: user} } }) => {
+            .addCase(UserLogin.fulfilled, (state, { payload: { data: {data, success} } }) => {
                 state.loading = false
                 notification.success({
-                    message
+                    message: data
                 })
                 state.user = user
             })
-            .addCase(UserLogin.rejected, (state, { payload: { data, status } }) => {
+            .addCase(UserLogin.rejected, (state, { payload: { data: {data, success}, status } }) => {
                 state.loading = false
                 notification.error({
                     message: data
@@ -83,12 +83,12 @@ export const user = createSlice({
                 state.loading = false
                 state.user = data
             })
-            .addCase(UserMe.rejected, (state, { payload: { data: {message, status}, status: statusCode } }) => {
+            .addCase(UserMe.rejected, (state, { payload: { data: {data, success}, status: statusCode } }) => {
                 state.loading = false
                 notification.error({
-                    message: message
+                    message: data
                 })
-                if(message === "Token expired" || status === 0 || statusCode === 401) Cookies.remove('token')
+                if(success === 0 || statusCode === 401) Cookies.remove('token')
             })
     }
 })

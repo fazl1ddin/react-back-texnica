@@ -7,6 +7,10 @@ const onRequest = (config) => {
     config.baseURL = `http://localhost:3002/`;
 
     config.withCredentials = true
+
+    config.headers = {
+        "Content-Type": "application/json; charset=utf-8"
+    }
     
     return config;
 }
