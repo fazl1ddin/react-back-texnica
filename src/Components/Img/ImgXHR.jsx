@@ -2,7 +2,7 @@ import { useLayoutEffect, useState } from "react"
 import axios from "axios"
 import BaseLoader from "../Loaders/BaseLoader"
 
-function ImgXHR({src}) {
+function ImgXHR({src, height = "100%", width = "100%"}) {
     const [url, setUrl] = useState(undefined)
     const [loading, setLoading] = useState(true)
     
@@ -17,7 +17,7 @@ function ImgXHR({src}) {
         )()
     }, [src])
 
-    return loading ? <BaseLoader circleHeight={100} circlewidth={100} height={'100%'} width={'100%'}/> :
+    return loading ? <BaseLoader circleHeight={100} circlewidth={100} height={height} width={width}/> :
     <img src={url} alt="" />
 }
 

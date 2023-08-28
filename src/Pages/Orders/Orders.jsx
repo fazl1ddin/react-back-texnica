@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Pagination, Table } from "antd";
 import PageTitle from "../../Components/PageTitle/PageTitle";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";
@@ -6,6 +6,7 @@ import ImgXHR from "../../Components/Img/ImgXHR";
 import useGetDatas from "../../Hooks/getData/getDatas";
 import useGetProducts from "../../Hooks/getData/getProducts";
 import { useState } from "react";
+import BaseLoader from "../../Components/Loaders/BaseLoader";
 
 const columns = [
   Table.EXPAND_COLUMN,
@@ -57,6 +58,16 @@ const columns = [
   },
 ];
 
+const itemRender = (_, type, originalElement) => {
+  if (type === 'prev') {
+    return <a>Previous</a>;
+  }
+  if (type === 'next') {
+    return <a>Next</a>;
+  }
+  return originalElement;
+};
+
 function Orders({ title }) {
   const [pids, setPids] = useState([]);
   const { data: orders, loading } = useGetDatas("/orders");
@@ -65,7 +76,7 @@ function Orders({ title }) {
     pids,
     orders.length && loading === false && pids.length,
     {
-      s: "product",
+      s: "product,productName,price",
     }
   );
 
@@ -89,22 +100,27 @@ function Orders({ title }) {
                   : `${record.address.city} ${record.address.shop}`}
                 <div className="flex w-full">
                   {record.products.map((item) => {
+                    const product = products.find((product) => product._id === item)
                     return ploading ? (
-                      <>aafsaffas</>
+                      <BaseLoader circleHeight={100} circlewidth={100} height={'100%'} width={'100%'}/>
                     ) : (
                       <Link
                         key={item}
                         to={`/product/${
-                          products.find((product) => product._id === item)._id
+                          product._id
                         }`}
                         className="w-1/4"
                       >
                         <ImgXHR
                           src={
-                            products.find((product) => product._id === item)
+                            product
                               .product[0]
                           }
-                        />
+                            height={190}
+                            width={242}
+                          />
+                          <p className="h-14">{product.productName}</p>
+                          <p>Price: {product.price }</p>
                       </Link>
                     );
                   })}
@@ -128,6 +144,7 @@ function Orders({ title }) {
         dataSource={orders}
         pagination={false}
       ></Table>
+      <Pagination total={500} itemRender={itemRender} />
     </>
   );
 }
