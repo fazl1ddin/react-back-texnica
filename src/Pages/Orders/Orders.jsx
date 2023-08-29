@@ -4,9 +4,9 @@ import moment from "moment/moment";
 import { Link } from "react-router-dom";
 import ImgXHR from "../../Components/Img/ImgXHR";
 import useGetDatas from "../../Hooks/getData/getDatas";
-import useGetProducts from "../../Hooks/getData/getProducts";
 import { useState } from "react";
 import BaseLoader from "../../Components/Loaders/BaseLoader";
+import usePagination from "../../Hooks/usePagination/usePagination";
 
 const columns = [
   Table.EXPAND_COLUMN,
@@ -59,20 +59,33 @@ const columns = [
 ];
 
 const itemRender = (_, type, originalElement) => {
-  if (type === 'prev') {
+  if (type === "prev") {
     return <a>Previous</a>;
   }
-  if (type === 'next') {
+  if (type === "next") {
     return <a>Next</a>;
   }
   return originalElement;
 };
 
-function Orders({ title }) {
+function Orders({ title, statistics, stLoading }) {
+  const [page, size, handler] = usePagination();
+  console.log(page, size);
   const [pids, setPids] = useState([]);
-  const { data: orders, loading } = useGetDatas("/orders");
-  const { data: products, loading: ploading } = useGetProducts(
+  const { data: orders, loading } = useGetDatas(
+    "/orders",
+    "GET",
+    [],
+    Boolean(size && page),
+    {
+      p: page,
+      pp: size,
+    },
+    [page, size]
+  );
+  const { data: products, loading: ploading } = useGetDatas(
     "/products",
+    "POST",
     pids,
     orders.length && loading === false && pids.length,
     {
@@ -100,27 +113,29 @@ function Orders({ title }) {
                   : `${record.address.city} ${record.address.shop}`}
                 <div className="flex w-full">
                   {record.products.map((item) => {
-                    const product = products.find((product) => product._id === item)
+                    const product = products.find(
+                      (product) => product._id === item
+                    );
                     return ploading ? (
-                      <BaseLoader circleHeight={100} circlewidth={100} height={'100%'} width={'100%'}/>
+                      <BaseLoader
+                        circleHeight={100}
+                        circlewidth={100}
+                        height={"100%"}
+                        width={"100%"}
+                      />
                     ) : (
                       <Link
                         key={item}
-                        to={`/product/${
-                          product._id
-                        }`}
+                        to={`/product/${product._id}`}
                         className="w-1/4"
                       >
                         <ImgXHR
-                          src={
-                            product
-                              .product[0]
-                          }
-                            height={190}
-                            width={242}
-                          />
-                          <p className="h-14">{product.productName}</p>
-                          <p>Price: {product.price }</p>
+                          src={product.product[0]}
+                          height={190}
+                          width={242}
+                        />
+                        <p className="h-14">{product.productName}</p>
+                        <p>Price: {product.price}</p>
                       </Link>
                     );
                   })}
@@ -144,7 +159,17 @@ function Orders({ title }) {
         dataSource={orders}
         pagination={false}
       ></Table>
-      <Pagination total={500} itemRender={itemRender} />
+      {stLoading ? (
+        <BaseLoader height={32} circleHeight={20} circlewidth={20} />
+      ) : (
+        <Pagination
+          pageSize={size}
+          current={page}
+          onChange={handler}
+          total={statistics?.Orders}
+          itemRender={itemRender}
+        />
+      )}
     </>
   );
 }
