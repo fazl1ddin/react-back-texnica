@@ -8,56 +8,6 @@ import { useState } from "react";
 import BaseLoader from "../../Components/Loaders/BaseLoader";
 import usePagination from "../../Hooks/usePagination/usePagination";
 
-const columns = [
-  Table.EXPAND_COLUMN,
-  {
-    title: "No",
-    dataIndex: "key",
-    render: (_, _a, index) => index + 1,
-    width: 60,
-  },
-  {
-    title: "Id",
-    dataIndex: "_id",
-    key: "_id",
-    render: (id) => <Link to={`/order/${id}`}>{id}</Link>,
-  },
-  {
-    title: "Date",
-    dataIndex: "date",
-    key: "date",
-    render: (date) => (
-      <>{moment(Number(date)).format("MMMM Do YYYY, h:mm:ss a")}</>
-    ),
-  },
-  {
-    title: "Type",
-    dataIndex: "type",
-    key: "type",
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-  },
-  {
-    title: "Type pay",
-    dataIndex: "typePay",
-    key: "typePay",
-  },
-  {
-    title: "User Id",
-    dataIndex: "userId",
-    key: "userId",
-    render: (user) => <Link to={`/user/${user}`}>{user}</Link>,
-  },
-  {
-    title: "Price",
-    dataIndex: "price",
-    key: "price",
-  },
-];
-
 const itemRender = (_, type, originalElement) => {
   if (type === "prev") {
     return <a>Previous</a>;
@@ -70,6 +20,55 @@ const itemRender = (_, type, originalElement) => {
 
 function Orders({ title, statistics, stLoading }) {
   const [page, size, handler] = usePagination();
+  const columns = [
+    Table.EXPAND_COLUMN,
+    {
+      title: "No",
+      dataIndex: "key",
+      render: (_, _a, index) => index + 1 + size * (page - 1),
+      width: 60,
+    },
+    {
+      title: "Id",
+      dataIndex: "_id",
+      key: "_id",
+      render: (id) => <Link to={`/order/${id}`}>{id}</Link>,
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+      render: (date) => (
+        <>{moment(Number(date)).format("MMMM Do YYYY, h:mm:ss a")}</>
+      ),
+    },
+    {
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Type pay",
+      dataIndex: "typePay",
+      key: "typePay",
+    },
+    {
+      title: "User Id",
+      dataIndex: "userId",
+      key: "userId",
+      render: (user) => <Link to={`/user/${user}`}>{user}</Link>,
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+    },
+  ];
   console.log(page, size);
   const [pids, setPids] = useState([]);
   const { data: orders, loading } = useGetDatas(
