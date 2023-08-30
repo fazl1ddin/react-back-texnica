@@ -3,10 +3,11 @@ import PageTitle from "../../Components/PageTitle/PageTitle";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";
 import ImgXHR from "../../Components/Img/ImgXHR";
-import useGetDatas from "../../Hooks/getData/getDatas";
+import useGetDatas from "../../Hooks/getDatas/useGetDatas";
 import { useState } from "react";
 import BaseLoader from "../../Components/Loaders/BaseLoader";
 import usePagination from "../../Hooks/usePagination/usePagination";
+import useGetDatasExper from "../../Hooks/getDatas copy/useGetDatasExper";
 
 const itemRender = (_, type, originalElement) => {
   if (type === "prev") {
@@ -69,7 +70,6 @@ function Orders({ title, statistics, stLoading }) {
       key: "price",
     },
   ];
-  console.log(page, size);
   const [pids, setPids] = useState([]);
   const { data: orders, loading } = useGetDatas(
     "/orders",
@@ -82,7 +82,7 @@ function Orders({ title, statistics, stLoading }) {
     },
     [page, size]
   );
-  const { data: products, loading: ploading } = useGetDatas(
+  const { data: products, loading: ploading } = useGetDatasExper(
     "/products",
     "POST",
     pids,
@@ -111,18 +111,16 @@ function Orders({ title, statistics, stLoading }) {
                   ? record.dateDeliv
                   : `${record.address.city} ${record.address.shop}`}
                 <div className="flex w-full">
-                  {record.products.map((item) => {
-                    const product = products.find(
-                      (product) => product._id === item
-                    );
-                    return ploading ? (
+                  {ploading ? (
                       <BaseLoader
                         circleHeight={100}
                         circlewidth={100}
-                        height={"100%"}
+                        height={284}
                         width={"100%"}
                       />
-                    ) : (
+                    ) : record.products.map((item) => {
+                    const product = products[item]
+                    return (
                       <Link
                         key={item}
                         to={`/product/${product._id}`}
@@ -142,7 +140,7 @@ function Orders({ title, statistics, stLoading }) {
               </>
             );
           },
-          onExpand: (open, record) => {
+          onExpand: (_, record) => {
             const set = new Set();
             record.products.forEach((product) => {
               set.add(product);

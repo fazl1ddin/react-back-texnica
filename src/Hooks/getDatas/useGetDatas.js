@@ -13,7 +13,6 @@ function useGetDatas(
   const [loading, setloading] = useState(true);
 
   useLayoutEffect(() => {
-    console.log(call);
     if (call) {
       (async () => {
         setloading(true);
