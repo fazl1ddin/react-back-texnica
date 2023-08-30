@@ -69,7 +69,7 @@ function App() {
               <Layout>
                 <Layout.Sider
                   className="fixed left-0 top-0 h-full"
-                  width={"24rem"}
+                  width={"12rem"}
                 >
                   {private_routes.map((item, index) => (
                     <NavLink
@@ -85,7 +85,7 @@ function App() {
                     </NavLink>
                   ))}
                 </Layout.Sider>
-                <Layout.Content className="ml-96 p-2 h-screen">
+                <Layout.Content className="ml-48   p-2 h-screen">
                   <Outlet />
                 </Layout.Content>
               </Layout>
