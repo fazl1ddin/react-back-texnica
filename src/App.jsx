@@ -85,7 +85,7 @@ function App() {
                     </NavLink>
                   ))}
                 </Layout.Sider>
-                <Layout.Content className="ml-48   p-2 h-screen">
+                <Layout.Content className="ml-48 bg-white p-2">
                   <Outlet />
                 </Layout.Content>
               </Layout>
