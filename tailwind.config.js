@@ -17,7 +17,7 @@ module.exports = {
       colors: {
         'default': configStyles.defaultColor
       }
-    },
+    }
   },
   plugins: [],
   important: true,

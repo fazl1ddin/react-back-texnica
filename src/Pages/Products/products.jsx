@@ -1,8 +1,11 @@
-import { Switch, Table } from "antd";
+import { Pagination, Switch, Table } from "antd";
 import PageTitle from "../../Components/PageTitle/PageTitle";
 import useGetDatas from "../../Hooks/getDatas/useGetDatas";
 import usePagination from "../../Hooks/usePagination/usePagination";
 import { Link } from "react-router-dom";
+import DOMPurify from "dompurify";
+import BaseLoader from "../../Components/Loaders/BaseLoader";
+import PrevNext from "../../Components/PrevNext/PrevNext";
 
 const specColumns = [
   {
@@ -75,7 +78,17 @@ const specColumns = [
   },
 ];
 
-function Products({ statistics, stLoading }) {
+const itemRender = (disabled, type, originalElement) => {
+  if (type === "prev") {
+    return <PrevNext type={type} disabled={disabled}/>;
+  }
+  if (type === "next") {
+    return <PrevNext type={type} disabled={disabled}/>;
+  }
+  return originalElement;
+};
+
+function Products() {
   const [page, size, handler] = usePagination(1, 30);
   const columns = [
     Table.EXPAND_COLUMN,
@@ -143,7 +156,7 @@ function Products({ statistics, stLoading }) {
     },
   ];
 
-  const { data: products, loading } = useGetDatas(
+  const { data: products, loading, length } = useGetDatas(
     "/products",
     "GET",
     [],
@@ -169,7 +182,7 @@ function Products({ statistics, stLoading }) {
                   pagination={false}
                 ></Table>
                 <p className="text-2xl">{record.description.title}</p>
-                <p className="text-lg">{record.description.content}</p>
+                <p className="text-lg" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(record.description.content)}}/>
               </>
             );
           },
@@ -182,6 +195,17 @@ function Products({ statistics, stLoading }) {
         dataSource={products}
         pagination={false}
       ></Table>
+      {loading ? (
+        <BaseLoader height={32} circleHeight={20} circlewidth={20} />
+      ) : (
+        <Pagination
+          pageSize={size}
+          current={page}
+          onChange={handler}
+          total={length}
+          itemRender={itemRender}
+        />
+      )}
     </>
   );
 }

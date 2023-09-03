@@ -8,18 +8,19 @@ import { useState } from "react";
 import BaseLoader from "../../Components/Loaders/BaseLoader";
 import usePagination from "../../Hooks/usePagination/usePagination";
 import useGetDatasExper from "../../Hooks/getDatas copy/useGetDatasExper";
+import PrevNext from "../../Components/PrevNext/PrevNext";
 
-const itemRender = (_, type, originalElement) => {
+const itemRender = (disabled, type, originalElement) => {
   if (type === "prev") {
-    return <a>Previous</a>;
+    return <PrevNext type={type} disabled={disabled}/>;
   }
   if (type === "next") {
-    return <a>Next</a>;
+    return <PrevNext type={type} disabled={disabled}/>;
   }
   return originalElement;
 };
 
-function Orders({ title, statistics, stLoading }) {
+function Orders({ title }) {
   const [page, size, handler] = usePagination();
   const columns = [
     Table.EXPAND_COLUMN,
@@ -71,7 +72,7 @@ function Orders({ title, statistics, stLoading }) {
     },
   ];
   const [pids, setPids] = useState([]);
-  const { data: orders, loading } = useGetDatas(
+  const { data: orders, loading, length } = useGetDatas(
     "/orders",
     "GET",
     [],
@@ -156,14 +157,14 @@ function Orders({ title, statistics, stLoading }) {
         dataSource={orders}
         pagination={false}
       ></Table>
-      {stLoading ? (
+      {loading ? (
         <BaseLoader height={32} circleHeight={20} circlewidth={20} />
       ) : (
         <Pagination
           pageSize={size}
           current={page}
           onChange={handler}
-          total={statistics?.Orders}
+          total={length}
           itemRender={itemRender}
         />
       )}

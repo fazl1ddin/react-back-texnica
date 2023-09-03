@@ -2,36 +2,40 @@ import { Layout } from "antd";
 import { useLayoutEffect, useState } from "react";
 import "./App.css";
 import { private_routes, public_routes } from "./Router";
-import { storeStatistics, storeUser } from "./Store";
+import { storeUser } from "./Store";
 import BaseLoader from "./Components/Loaders/BaseLoader";
-import { NavLink, Outlet, Route, Routes } from "react-router-dom";
+import {
+  NavLink,
+  Outlet,
+  Route,
+  Routes
+} from "react-router-dom";
 import { UserMe } from "./Store/user";
 import Cookies from "js-cookie";
-import instance from "./Config/api";
-import { setLoading, setStatistics } from "./Store/statistics";
 
-async function getSt() {
-  storeStatistics.dispatch(setLoading(true));
-  const res = await instance({ url: "/statistics", method: "GET" });
-  storeStatistics.dispatch(setLoading(false));
-  if (res.data.success === 1) {
-    storeStatistics.dispatch(setStatistics(res.data.data));
-    await instance({ url: "/statistics", method: "POST" });
-    getSt();
-  }
-}
+// SSE
+// async function getSt() {
+//   storeStatistics.dispatch(setLoading(true));
+//   const res = await instance({ url: "/statistics", method: "GET" });
+//   storeStatistics.dispatch(setLoading(false));
+//   if (res.data.success === 1) {
+//     storeStatistics.dispatch(setStatistics(res.data.data));
+//     await instance({ url: "/statistics", method: "POST" });
+//     getSt();
+//   }
+// }
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(undefined);
-  const [statistics, setStatistics] = useState(undefined);
-  const [stLoading, setStLoading] = useState(true);
+  // const [statistics, setStatistics] = useState(undefined);
+  // const [stLoading, setStLoading] = useState(true);
 
-  storeStatistics.subscribe(() => {
-    const { statistics, loading } = storeStatistics.getState();
-    setStatistics(statistics);
-    setStLoading(loading);
-  });
+  // storeStatistics.subscribe(() => {
+  //   const { statistics, loading } = storeStatistics.getState();
+  //   setStatistics(statistics);
+  //   setStLoading(loading);
+  // });
 
   storeUser.subscribe(() => {
     const { user, loading } = storeUser.getState();
@@ -42,7 +46,7 @@ function App() {
   useLayoutEffect(() => {
     (async () => {
       if (Cookies.get("token")) await storeUser.dispatch(UserMe());
-      await getSt();
+      // await getSt();
     })();
   }, []);
 
@@ -94,7 +98,10 @@ function App() {
             {private_routes.map((item, index) => (
               <Route
                 key={index}
-                element={{ ...item.element, props: { title: item.title, statistics, stLoading } }}
+                element={{
+                  ...item.element,
+                  props: { ...item.element.props, title: item.title },
+                }}
                 path={item.path}
               ></Route>
             ))}

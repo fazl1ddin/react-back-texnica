@@ -88,7 +88,8 @@ export const user = createSlice({
                 notification.error({
                     message: data
                 })
-                if(success === 0 || statusCode === 401) Cookies.remove('token')
+                if (success === 0 || statusCode === 401) Cookies.remove('token')
+                
             })
     }
 })

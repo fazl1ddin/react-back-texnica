@@ -10,6 +10,7 @@ function useGetDatas(
   refetch = []
 ) {
   const [data, setdata] = useState([]);
+  const [length, setlength] = useState([]);
   const [loading, setloading] = useState(true);
 
   useLayoutEffect(() => {
@@ -24,7 +25,8 @@ function useGetDatas(
             params,
           });
           if (res.data.success === 1) {
-            setdata(res.data.data);
+            setdata(res.data.data.items);
+            setlength(res.data.data.length);
           } else {
             throw new Error("Success is not 1");
           }
@@ -39,6 +41,7 @@ function useGetDatas(
 
   return {
     data,
+    length,
     loading,
   };
 }
