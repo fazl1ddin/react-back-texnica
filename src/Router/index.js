@@ -449,29 +449,27 @@ function ashColumns(datas) {
 export const private_routes = [
 //   {
 //     path: "/",
-//     element: {
-//       ...CRUD({
+//     element: React.cloneElement(<CRUD/>, {
 //         path: "/orders",
-//         // hook: function (datas) {
-//         //   const [pids, setPids] = useState([]);
-//         //   const { data: products, loading: ploading } = useGetDatasExper(
-//         //     "/products",
-//         //     "POST",
-//         //     pids,
-//         //     datas.data.length && datas.loading === false && pids.length,
-//         //     {
-//         //       s: "product,productName,price",
-//         //     }
-//         //   );
-//         //   return { pids, setPids, products, ploading };
-//         // },
+//         hook: function (datas) {
+//           const [pids, setPids] = useState([]);
+//           const { data: products, loading: ploading } = useGetDatasExper(
+//             "/products",
+//             "POST",
+//             pids,
+//             datas.data.length && datas.loading === false && pids.length,
+//             {
+//               s: "product,productName,price",
+//             }
+//           );
+//           return { pids, setPids, products, ploading };
+//         },
 //         columns: orders,
 //         expanR: function (dataHook) {
 //           return ordersERender(dataHook?.ploading, dataHook?.products);
 //         },
 //         onE: onExp,
 //       }),
-//         },
 //     title: "Orders"
 //   },
   {

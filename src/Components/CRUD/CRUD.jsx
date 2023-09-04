@@ -18,6 +18,7 @@ const itemRender = (disabled, type, originalElement) => {
 let ok;
 
 function CRUD(props) {
+  console.log(props);
   ok = ok || props.hook
   const [page, size, handler] = usePagination(1, props.size || 10);
 
