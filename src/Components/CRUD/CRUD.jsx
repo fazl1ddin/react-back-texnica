@@ -15,11 +15,11 @@ const itemRender = (disabled, type, originalElement) => {
   return originalElement;
 };
 
-let ok;
+/*let ok;*/
 
 function CRUD(props) {
-  console.log(props);
-  ok = ok || props.hook
+  /*console.log(props);
+  ok = ok || props.hook*/
   const [page, size, handler] = usePagination(1, props.size || 10);
 
   const datas = useGetDatas(
@@ -35,7 +35,7 @@ function CRUD(props) {
     [size, page]
   );
 
-  const dataHook = ok?.(datas);
+  /*const dataHook = ok?.(datas);*/
 
   return (
     <>
@@ -43,14 +43,14 @@ function CRUD(props) {
       <Table
         rowClassName="text-lg"
         expandable={{
-            expandedRowRender: props.expanR && props.expanR(dataHook),
-            onExpand: props.onE && props.onE(dataHook),
+            expandedRowRender: props.expanR && props.expanR(/*dataHook*/),
+            onExpand: props.onE && props.onE(/*dataHook*/),
         }}
         bordered
         sticky
         loading={datas.loading}
         rowKey={"_id"}
-        columns={props.columns({ ...props, size, page, dataHook }).filter(item => item)}
+        columns={props.columns({ ...props, size, page, /*dataHook*/ }).filter(item => item)}
         dataSource={datas.data}
         pagination={false}
       ></Table>

@@ -1,15 +1,16 @@
 import Login from "../Pages/Login/Login";
-import React, { useState } from "react";
+import React from "react";
 import CRUD from "../Components/CRUD/CRUD";
 import { Switch, Table } from "antd";
 import { Link } from "react-router-dom";
 import PageNotFound from "../Pages/PageNotFound/PageNotFound";
 import tpch from "../Utils/typepaycheck";
 import moment from "moment";
-import useGetDatasExper from "../Hooks/getDatas copy/useGetDatasExper";
-import BaseLoader from "../Components/Loaders/BaseLoader";
 import ImgXHR from "../Components/Img/ImgXHR";
 import DOMPurify from "dompurify";
+import Orders from "../Pages/Orders/Orders";
+import News from "../Pages/News/news";
+import AddressShops from "../Pages/Address-Shops/addressShops";
 
 export const public_routes = [
   {
@@ -22,55 +23,55 @@ export const public_routes = [
   },
 ];
 
-function orders(datas) {
-  return [
-    datas.expandable ? Table.EXPAND_COLUMN : undefined,
-    {
-      title: "No",
-      dataIndex: "key",
-      render: (_, _a, index) => index + 1 + datas.size * (datas.page - 1),
-      width: 60,
-    },
-    {
-      title: "Id",
-      dataIndex: "_id",
-      key: "_id",
-      render: (id) => <Link to={`/order/${id}`}>{id}</Link>,
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-      render: (date) => moment(Number(date)).format("MMMM Do YYYY, h:mm:ss a"),
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Type pay",
-      dataIndex: "typePay",
-      key: "typePay",
-    },
-    {
-      title: "User Id",
-      dataIndex: "userId",
-      key: "userId",
-      render: (user) => <Link to={`/user/${user}`}>{user}</Link>,
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-    },
-  ];
-}
+// function orders(datas) {
+//   return [
+//     datas.expandable ? Table.EXPAND_COLUMN : undefined,
+//     {
+//       title: "No",
+//       dataIndex: "key",
+//       render: (_, _a, index) => index + 1 + datas.size * (datas.page - 1),
+//       width: 60,
+//     },
+//     {
+//       title: "Id",
+//       dataIndex: "_id",
+//       key: "_id",
+//       render: (id) => <Link to={`/order/${id}`}>{id}</Link>,
+//     },
+//     {
+//       title: "Date",
+//       dataIndex: "date",
+//       key: "date",
+//       render: (date) => moment(Number(date)).format("MMMM Do YYYY, h:mm:ss a"),
+//     },
+//     {
+//       title: "Type",
+//       dataIndex: "type",
+//       key: "type",
+//     },
+//     {
+//       title: "Status",
+//       dataIndex: "status",
+//       key: "status",
+//     },
+//     {
+//       title: "Type pay",
+//       dataIndex: "typePay",
+//       key: "typePay",
+//     },
+//     {
+//       title: "User Id",
+//       dataIndex: "userId",
+//       key: "userId",
+//       render: (user) => <Link to={`/user/${user}`}>{user}</Link>,
+//     },
+//     {
+//       title: "Price",
+//       dataIndex: "price",
+//       key: "price",
+//     },
+//   ];
+// }
 
 function typePays(datas) {
   return [
@@ -118,7 +119,7 @@ function dtd(datas) {
       title: "Id",
       dataIndex: "_id",
       key: "_id",
-      render: (id) => <Link to={`/type-pay/${id}`}>{id}</Link>,
+      render: (id) => <Link to={`/${datas.pathOne}/${id}`}>{id}</Link>,
     },
     {
       title: "Date",
@@ -164,7 +165,7 @@ function citiesColumns(datas) {
       title: "Id",
       dataIndex: "_id",
       key: "_id",
-      render: (id) => <Link to={`/type-pay/${id}`}>{id}</Link>,
+      render: (id) => <Link to={`/${datas.pathOne}/${id}`}>{id}</Link>,
     },
     {
       title: "Name",
@@ -187,7 +188,7 @@ function productsColumns(datas) {
       title: "Id",
       dataIndex: "_id",
       key: "_id",
-      render: (id) => <Link to={`/product/${id}`}>{id}</Link>,
+      render: (id) => <Link to={`/${datas.pathOne}/${id}`}>{id}</Link>,
     },
     {
       title: "Protection",
@@ -313,52 +314,6 @@ const specColumns = [
   },
 ];
 
-const ordersERender = (ploading, products) => (record) => {
-  return (
-    <>
-      <p
-        style={{
-          margin: 0,
-        }}
-      >
-        {`First name : ${record.getter.first_name}. Last name: ${record.getter.last_name}. Tel: ${record.getter.phone_number}. Email: ${record.getter.email}`}
-      </p>
-      {record.type === 0
-        ? record.dateDeliv
-        : `${record.address.city} ${record.address.shop}`}
-      <div className="flex w-full">
-        {ploading ? (
-          <BaseLoader
-            circleHeight={100}
-            circlewidth={100}
-            height={284}
-            width={"100%"}
-          />
-        ) : (
-          record.products.map((item) => {
-            const product = products[item];
-            return (
-              <Link key={item} to={`/product/${product._id}`} className="w-1/4">
-                <ImgXHR src={product.product[0]} height={190} width={242} />
-                <p className="h-14">{product.productName}</p>
-                <p>Price: {product.price}</p>
-              </Link>
-            );
-          })
-        )}
-      </div>
-    </>
-  );
-};
-
-const onExp = (datas) => (_, record) => {
-  const set = new Set();
-  record.products.forEach((product) => {
-    set.add(product);
-  });
-  datas.setPids(Array.from(set));
-};
-
 function promosColumns(datas) {
   return [
     datas.expandable ? Table.EXPAND_COLUMN : undefined,
@@ -374,7 +329,7 @@ function promosColumns(datas) {
       title: "Id",
       dataIndex: "_id",
       key: "_id",
-      render: (id) => <Link to={`/promo/${id}`}>{id}</Link>,
+      render: (id) => <Link to={`/${datas.pathOne}/${id}`}>{id}</Link>,
     },
     {
       title: "Title",
@@ -384,32 +339,32 @@ function promosColumns(datas) {
   ];
 }
 
-function newsColumns(datas) {
-  return [
-    datas.expandable ? Table.EXPAND_COLUMN : undefined,
-    {
-      title: "No",
-      dataIndex: "key",
-      render: (_, _a, index) => {
-        return index + 1 + datas.size * (datas.page - 1);
-      },
-      width: 60,
-    },
-    {
-      title: "Id",
-      dataIndex: "_id",
-      key: "_id",
-      render: (id) => <Link to={`/promo/${id}`}>{id}</Link>,
-    },
-    {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-    },
-  ];
-}
+// function newsColumns(datas) {
+//   return [
+//     datas.expandable ? Table.EXPAND_COLUMN : undefined,
+//     {
+//       title: "No",
+//       dataIndex: "key",
+//       render: (_, _a, index) => {
+//         return index + 1 + datas.size * (datas.page - 1);
+//       },
+//       width: 60,
+//     },
+//     {
+//       title: "Id",
+//       dataIndex: "_id",
+//       key: "_id",
+//       render: (id) => <Link to={`/promo/${id}`}>{id}</Link>,
+//     },
+//     {
+//       title: "Title",
+//       dataIndex: "title",
+//       key: "title",
+//     },
+//   ];
+// }
 
-function ashColumns(datas) {
+/*function ashColumns(datas) {
   return [
     datas.expandable ? Table.EXPAND_COLUMN : undefined,
     {
@@ -444,34 +399,34 @@ function ashColumns(datas) {
       },
     },
   ];
-}
+}*/
 
 export const private_routes = [
-//   {
-//     path: "/",
-//     element: React.cloneElement(<CRUD/>, {
-//         path: "/orders",
-//         hook: function (datas) {
-//           const [pids, setPids] = useState([]);
-//           const { data: products, loading: ploading } = useGetDatasExper(
-//             "/products",
-//             "POST",
-//             pids,
-//             datas.data.length && datas.loading === false && pids.length,
-//             {
-//               s: "product,productName,price",
-//             }
-//           );
-//           return { pids, setPids, products, ploading };
-//         },
-//         columns: orders,
-//         expanR: function (dataHook) {
-//           return ordersERender(dataHook?.ploading, dataHook?.products);
-//         },
-//         onE: onExp,
-//       }),
-//     title: "Orders"
-//   },
+  /*{
+    path: "/",
+    element: React.cloneElement(<CRUD/>, {
+        path: "/orders",
+        hook: function (datas) {
+          const [pids, setPids] = useState([]);
+          const { data: products, loading: ploading } = useGetDatasExper(
+            "/products",
+            "POST",
+            pids,
+            datas.data.length && datas.loading === false && pids.length,
+            {
+              s: "product,productName,price",
+            }
+          );
+          return { pids, setPids, products, ploading };
+        },
+        columns: orders,
+        expanR: function (dataHook) {
+          return ordersERender(dataHook?.ploading, dataHook?.products);
+        },
+        onE: onExp,
+      }),
+    title: "Orders"
+  },
   {
     path: "/",
     element: (
@@ -498,36 +453,38 @@ export const private_routes = [
       />
     ),
     title: "Orders",
+  },*/
+  {
+    path: "/",
+    element: <Orders />,
+    title: "Orders",
   },
   {
     path: "/products",
     element: (
       <CRUD
+        pathOne="product"
         size={30}
         path="/products"
         columns={productsColumns}
-        expandable={function () {
-          return {
-            expandedRowRender: (record) => {
-              return (
-                <>
-                  <Table
-                    bordered
-                    columns={specColumns}
-                    dataSource={[record.specification]}
-                    pagination={false}
-                  ></Table>
-                  <p className="text-2xl">{record.description.title}</p>
-                  <p
-                    className="text-lg"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(record.description.content),
-                    }}
-                  />
-                </>
-              );
-            },
-          };
+        expanR={() => (record) => {
+          return (
+            <>
+              <Table
+                bordered
+                columns={specColumns}
+                dataSource={[record.specification]}
+                pagination={false}
+              ></Table>
+              <p className="text-2xl">{record.description.title}</p>
+              <p
+                className="text-lg"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(record.description.content),
+                }}
+              />
+            </>
+          );
         }}
       />
     ),
@@ -535,17 +492,17 @@ export const private_routes = [
   },
   {
     path: "/type-pays",
-    element: <CRUD path="/type-pays" columns={typePays} />,
+    element: <CRUD path="/type-pays" columns={typePays} pathOne="type-pay"/>,
     title: "Type pays",
   },
   {
     path: "/days-to-deliv",
-    element: <CRUD path="/days-to-deliv" columns={dtd} />,
+    element: <CRUD path="/days-to-deliv" columns={dtd}  pathOne="day-to-deliv"/>,
     title: "Days to deliv",
   },
   {
     path: "/cities",
-    element: <CRUD path="/cities" columns={citiesColumns} />,
+    element: <CRUD path="/cities" pathOne="city" columns={citiesColumns} />,
     title: "Cities",
   },
   {
@@ -575,11 +532,12 @@ export const private_routes = [
             </>
           );
         }}
+        pathOne="promo"
       />
     ),
     title: "Promos",
   },
-  {
+  /*{
     path: "/news",
     element: (
       <CRUD
@@ -635,8 +593,18 @@ export const private_routes = [
       />
     ),
     title: "News",
+  },*/
+  {
+    path: "/news",
+    element: <News />,
+    title: "News"
   },
   {
+    path: "/address-shops",
+    element: <AddressShops />,
+    title: "Address Shops"
+  }
+  /*{
     path: "/address-shops",
     element: (
       <CRUD
@@ -654,5 +622,5 @@ export const private_routes = [
       />
     ),
     title: "Address Shops",
-  },
+  },*/
 ];
