@@ -1,4 +1,4 @@
-function BaseLoader({width, height, circlewidth, circleHeight}) {
+function BaseLoader({width = "100%", height = "100%", circlewidth, circleHeight}) {
     return <>
         <div style={{
             width: width,

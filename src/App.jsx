@@ -70,12 +70,12 @@ function App() {
           <Route
             path="/"
             element={
-              <Layout>
+              <Layout className="h-full">
                 <Layout.Sider
                   className="fixed left-0 top-0 h-full"
                   width={"12rem"}
                 >
-                  {private_routes.map((item, index) => (
+                  {private_routes.map((item, index) => item.noneMenu ? undefined : (
                     <NavLink
                       key={index}
                       to={item.path}
@@ -89,7 +89,7 @@ function App() {
                     </NavLink>
                   ))}
                 </Layout.Sider>
-                <Layout.Content className="ml-48 bg-white p-2">
+                <Layout.Content className="ml-48 bg-white p-2 h-full">
                   <Outlet />
                 </Layout.Content>
               </Layout>

@@ -11,6 +11,7 @@ import DOMPurify from "dompurify";
 import Orders from "../Pages/Orders/Orders";
 import News from "../Pages/News/news";
 import AddressShops from "../Pages/Address-Shops/addressShops";
+import Order from "../Pages/Orders/pages/Order";
 
 export const public_routes = [
   {
@@ -458,6 +459,12 @@ export const private_routes = [
     path: "/",
     element: <Orders />,
     title: "Orders",
+  },
+  {
+    path: "/order/:id",
+    element: <Order />,
+    title: "Order",
+    noneMenu: true
   },
   {
     path: "/products",
