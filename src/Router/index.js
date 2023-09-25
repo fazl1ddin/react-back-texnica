@@ -11,7 +11,7 @@ import DOMPurify from "dompurify";
 import Orders from "../Pages/Orders/Orders";
 import News from "../Pages/News/news";
 import AddressShops from "../Pages/Address-Shops/addressShops";
-import Order from "../Pages/Orders/pages/Order";
+import Order from "../Pages/Orders/pages/order";
 
 export const public_routes = [
   {
@@ -499,12 +499,12 @@ export const private_routes = [
   },
   {
     path: "/type-pays",
-    element: <CRUD path="/type-pays" columns={typePays} pathOne="type-pay"/>,
+    element: <CRUD path="/type-pays" columns={typePays} pathOne="type-pay" />,
     title: "Type pays",
   },
   {
     path: "/days-to-deliv",
-    element: <CRUD path="/days-to-deliv" columns={dtd}  pathOne="day-to-deliv"/>,
+    element: <CRUD path="/days-to-deliv" columns={dtd} pathOne="day-to-deliv" />,
     title: "Days to deliv",
   },
   {

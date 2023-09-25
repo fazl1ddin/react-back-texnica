@@ -12,6 +12,9 @@ root.render(
     <ConfigProvider
       theme={{
         colorPrimary: configStyles.defaultColorBg,
+        token: {
+          colorTextDisabled: configStyles.defaultDisabledColor
+        }
       }}
     >
       <BrowserRouter>

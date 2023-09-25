@@ -3,11 +3,37 @@ import useGetDatasExper from "../../../Hooks/getDatas copy/useGetDatasExper";
 import PageTitle from "../../../Components/PageTitle/PageTitle";
 import BaseLoader from "../../../Components/Loaders/BaseLoader";
 import moment from "moment";
-import { useState } from "react";
 import instance from "../../../Config/api";
+import { useState } from "react";
+import { DatePicker, Input, Select } from "antd";
+import withZero from "../../../Utils/withZero";
+import useGetDatas from "../../../Hooks/getDatas/useGetDatas";
+
+function Getter({ getter, clicked }) {
+  return (
+    <div>
+      <p className="flex">
+        <span className="min-w-[100px]">First name :</span>
+        <Input disabled={!clicked} value={getter.first_name} className="max-w-[150px]"/>
+      </p>
+      <p className="flex">
+        <span className="min-w-[100px]">Last name:</span>
+        <Input disabled={!clicked} value={getter.last_name} className="max-w-[150px]"/>
+      </p>
+      <p className="flex">
+        <span className="min-w-[100px]">Tel:</span>
+        <Input disabled={!clicked} value={getter.phone_number} className="max-w-[150px]"/>
+      </p>
+      <p className="flex">
+        <span className="min-w-[100px]">Email:</span> <Input disabled={!clicked} value={getter.email} className="max-w-[150px]"/>
+      </p>
+    </div>
+  );
+}
 
 function Order({ title }) {
   const navigate = useNavigate();
+  const [clicked, setClicked] = useState(false);
   const { id } = useParams();
   const { data, loading } = useGetDatasExper(
     "/orders",
@@ -24,18 +50,17 @@ function Order({ title }) {
     [order?.dateDeliv],
     Boolean(order?.dateDeliv) && loading === false
   );
-  const city = useGetDatasExper(
-    "/cities",
-    "POST",
-    [order?.city],
-    Boolean(order?.city) && loading === false
-  );
+  const city = useGetDatas("/cities", "GET", [], loading === false);
   const typePay = useGetDatasExper(
     "/type-pays",
     "POST",
     [order?.typePay],
     Boolean(order?.typePay) && loading === false
   );
+
+  const onChange = (date, dateString) => {
+    console.log(date, dateString);
+  };
 
   return (
     <>
@@ -45,18 +70,25 @@ function Order({ title }) {
       ) : (
         <div>
           <div className="text-lg">
-            {`First name : ${order.getter.first_name}. Last name: ${order.getter.last_name}. Tel: ${order.getter.phone_number}. Email: ${order.getter.email}`}
-            <br />
-            Date: {moment(Number(order.date)).format("MMMM Do YYYY, h:mm:ss a")}
-            <br />
+            <Getter getter={order.getter} />
+            Date:&nbsp;
+            <DatePicker
+              disabled={!clicked}
+              onChange={onChange}
+              value={moment(Number(order.date))}
+              format={"MMMM Do YYYY, h:mm:ss a"}
+            />
             {dateDeliv.loading ? (
               <BaseLoader height="1rem" />
             ) : (
               <div>
-                Days to deliv:{" "}
-                {moment(dateDeliv.data[order.dateDeliv].date * 1000).format(
-                  "MMMM Do YYYY"
-                )}
+                Days to deliv:&nbsp;
+                <DatePicker
+                  disabled={!clicked}
+                  onChange={onChange}
+                  value={moment(dateDeliv.data[order.dateDeliv].date * 1000)}
+                  format={"MMMM Do YYYY"}
+                />
                 <ul className="pl-[5rem]">
                   {dateDeliv.data[order.dateDeliv].times.map(
                     (element, index) => {
@@ -67,13 +99,9 @@ function Order({ title }) {
                             order.time === element._id ? "bg-lime-500" : ""
                           }`}
                         >
-                          {element.time[0] >= 10
-                            ? element.time[0]
-                            : "0" + element.time[0]}
+                          {withZero(element.time[0])}
                           &nbsp;-&nbsp;
-                          {element.time[1] >= 10
-                            ? element.time[1]
-                            : "0" + element.time[1]}
+                          {withZero(element.time[1])}
                           &nbsp;
                           {element.isFree ? "(бесплатно)" : ""}
                           {order.time === element._id && "Selected"}
@@ -87,11 +115,21 @@ function Order({ title }) {
             {city.loading ? (
               <BaseLoader height="1rem" />
             ) : (
-              `Address: ${city.data[order.city]?.name} ${order.street} ${
-                order.home
-              }`
+              <div>
+                Address:
+                <Select
+                  disabled={!clicked}
+                  defaultValue={order.city}
+                  options={city.data.map((item) => ({
+                    ...item,
+                    value: item._id,
+                    label: item.name,
+                  }))}
+                />
+                , {order.street || "Street not inputed"},&nbsp;
+                {order.home || "Home not inputed"}
+              </div>
             )}
-            <br />
             Price: {order.price}
             <br />
             Status: {order.status}

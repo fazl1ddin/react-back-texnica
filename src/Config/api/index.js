@@ -4,7 +4,7 @@ let instance = axios.create();
 
 const onRequest = (config) => {
 
-    config.baseURL = `http://localhost:3002/`;
+    config.baseURL = `http://localhost:3000/`;
 
     config.withCredentials = true
 
