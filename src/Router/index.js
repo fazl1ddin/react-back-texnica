@@ -1,7 +1,7 @@
 import Login from "../Pages/Login/Login";
 import React from "react";
 import CRUD from "../Components/CRUD/CRUD";
-import { Switch, Table } from "antd";
+import { Table } from "antd";
 import { Link } from "react-router-dom";
 import PageNotFound from "../Pages/PageNotFound/PageNotFound";
 import tpch from "../Utils/typepaycheck";
@@ -11,7 +11,9 @@ import DOMPurify from "dompurify";
 import Orders from "../Pages/Orders/Orders";
 import News from "../Pages/News/news";
 import AddressShops from "../Pages/Address-Shops/addressShops";
-import Order from "../Pages/Orders/pages/order";
+import Order from "../Pages/Orders/pages/Order";
+import withZero from "../Utils/withZero";
+import Products from "../Pages/Products/products";
 
 export const public_routes = [
   {
@@ -23,56 +25,6 @@ export const public_routes = [
     element: <Login />,
   },
 ];
-
-// function orders(datas) {
-//   return [
-//     datas.expandable ? Table.EXPAND_COLUMN : undefined,
-//     {
-//       title: "No",
-//       dataIndex: "key",
-//       render: (_, _a, index) => index + 1 + datas.size * (datas.page - 1),
-//       width: 60,
-//     },
-//     {
-//       title: "Id",
-//       dataIndex: "_id",
-//       key: "_id",
-//       render: (id) => <Link to={`/order/${id}`}>{id}</Link>,
-//     },
-//     {
-//       title: "Date",
-//       dataIndex: "date",
-//       key: "date",
-//       render: (date) => moment(Number(date)).format("MMMM Do YYYY, h:mm:ss a"),
-//     },
-//     {
-//       title: "Type",
-//       dataIndex: "type",
-//       key: "type",
-//     },
-//     {
-//       title: "Status",
-//       dataIndex: "status",
-//       key: "status",
-//     },
-//     {
-//       title: "Type pay",
-//       dataIndex: "typePay",
-//       key: "typePay",
-//     },
-//     {
-//       title: "User Id",
-//       dataIndex: "userId",
-//       key: "userId",
-//       render: (user) => <Link to={`/user/${user}`}>{user}</Link>,
-//     },
-//     {
-//       title: "Price",
-//       dataIndex: "price",
-//       key: "price",
-//     },
-//   ];
-// }
 
 function typePays(datas) {
   return [
@@ -137,9 +89,9 @@ function dtd(datas) {
         times?.forEach((element) => {
           res.push(
             <p>
-              {element.time[0] >= 10 ? element.time[0] : "0" + element.time[0]}
+              {withZero(element.time[0])}
               &nbsp;-&nbsp;
-              {element.time[1] >= 10 ? element.time[1] : "0" + element.time[1]}
+              {withZero(element.time[1])}
               &nbsp;
               {element.isFree ? "(бесплатно)" : ""}
             </p>
@@ -175,145 +127,6 @@ function citiesColumns(datas) {
     },
   ];
 }
-
-function productsColumns(datas) {
-  return [
-    datas.expandable ? Table.EXPAND_COLUMN : undefined,
-    {
-      title: "No",
-      dataIndex: "key",
-      render: (_, _a, index) => index + 1 + datas.size * (datas.page - 1),
-      width: 60,
-    },
-    {
-      title: "Id",
-      dataIndex: "_id",
-      key: "_id",
-      render: (id) => <Link to={`/${datas.pathOne}/${id}`}>{id}</Link>,
-    },
-    {
-      title: "Protection",
-      dataIndex: "protection",
-      key: "protection",
-      render: (bool) => <Switch checked={bool} />,
-    },
-    {
-      title: "Hit",
-      dataIndex: "hit",
-      key: "hit",
-      render: (bool) => <Switch checked={bool} />,
-    },
-    {
-      title: "News",
-      dataIndex: "news",
-      key: "news",
-      render: (bool) => <Switch checked={bool} />,
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price) => new Intl.NumberFormat("ru").format(price),
-    },
-    {
-      title: "Sale",
-      dataIndex: "sale",
-      key: "sale",
-      render: (sale) => sale + "%",
-    },
-    {
-      title: "End price",
-      dataIndex: undefined,
-      key: "end_sale",
-      render: (_, product) =>
-        new Intl.NumberFormat("ru").format(
-          product.price - (product.price * product.sale) / 100
-        ),
-    },
-    {
-      title: "Name",
-      dataIndex: "productName",
-      key: "productName",
-    },
-    {
-      title: "Rates",
-      dataIndex: "rates",
-      key: "rates",
-      width: 68,
-    },
-  ];
-}
-
-const specColumns = [
-  {
-    title: "Speed",
-    dataIndex: "speed",
-  },
-  {
-    title: "ProductName",
-    dataIndex: "productName",
-  },
-  {
-    title: "TypeP",
-    dataIndex: "typeP",
-  },
-  {
-    title: "Power",
-    dataIndex: "power",
-  },
-  {
-    title: "Charge",
-    dataIndex: "charge",
-  },
-  {
-    title: "FrontBrake",
-    dataIndex: "frontBrake",
-  },
-  {
-    title: "Cruise",
-    dataIndex: "cruise",
-  },
-  {
-    title: "Power1",
-    dataIndex: "power1",
-  },
-  {
-    title: "Power2",
-    dataIndex: "power2",
-  },
-  {
-    title: "Charge1",
-    dataIndex: "charge1",
-  },
-  {
-    title: "FrontBrake1",
-    dataIndex: "frontBrake1",
-  },
-  {
-    title: "Cruise1",
-    dataIndex: "cruise1",
-  },
-  {
-    title: "Power3",
-    dataIndex: "power3",
-  },
-  {
-    title: "Charge2",
-    dataIndex: "charge2",
-  },
-  {
-    title: "FrontBrake2",
-    dataIndex: "frontBrake2",
-  },
-  {
-    title: "Cruise2",
-    dataIndex: "cruise2",
-  },
-  {
-    title: "FrontBrake3",
-    dataIndex: "frontBrake3",
-  },
-];
 
 function promosColumns(datas) {
   return [
@@ -468,34 +281,14 @@ export const private_routes = [
   },
   {
     path: "/products",
-    element: (
-      <CRUD
-        pathOne="product"
-        size={30}
-        path="/products"
-        columns={productsColumns}
-        expanR={() => (record) => {
-          return (
-            <>
-              <Table
-                bordered
-                columns={specColumns}
-                dataSource={[record.specification]}
-                pagination={false}
-              ></Table>
-              <p className="text-2xl">{record.description.title}</p>
-              <p
-                className="text-lg"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(record.description.content),
-                }}
-              />
-            </>
-          );
-        }}
-      />
-    ),
+    element: <Products/>,
     title: "Products",
+  },
+  {
+    path: "/products/create",
+    element: <></>,
+    title: "Product",
+    noneMenu: true
   },
   {
     path: "/type-pays",

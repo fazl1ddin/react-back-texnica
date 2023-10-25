@@ -3,19 +3,20 @@ import PageTitle from "../../Components/PageTitle/PageTitle";
 import moment from "moment/moment";
 import { Link } from "react-router-dom";
 import ImgXHR from "../../Components/Img/ImgXHR";
-import useGetDatas from "../../Hooks/getDatas/useGetDatas";
 import { useState } from "react";
 import BaseLoader from "../../Components/Loaders/BaseLoader";
 import usePagination from "../../Hooks/usePagination/usePagination";
-import useGetDatasExper from "../../Hooks/getDatas copy/useGetDatasExper";
 import PrevNext from "../../Components/PrevNext/PrevNext";
+import { useQuery } from "@tanstack/react-query";
+import { exportedOrdersServise } from "./services/orders";
+import img from "./photo_2023-10-09_10-17-01.jpg"
 
 const itemRender = (disabled, type, originalElement) => {
   if (type === "prev") {
-    return <PrevNext type={type} disabled={disabled}/>;
+    return <PrevNext type={type} disabled={disabled} />;
   }
   if (type === "next") {
-    return <PrevNext type={type} disabled={disabled}/>;
+    return <PrevNext type={type} disabled={disabled} />;
   }
   return originalElement;
 };
@@ -71,30 +72,35 @@ function Orders({ title }) {
       key: "price",
     },
   ];
-  const [pids, setPids] = useState([]);
-  const { data: orders, loading, length } = useGetDatas(
-    "/orders",
-    "GET",
-    [],
-    Boolean(size && page),
+  const { data: orders, isLoading: isOrdersLoading } = useQuery(
+    ["orders", page, size],
     {
-      p: page,
-      pp: size,
-    },
-    [page, size]
+      queryFn: () => exportedOrdersServise.GetAll(page, size),
+      select: (data) => ({
+        items: data.data.data.items,
+        length: data.data.data.length,
+      }),
+    }
   );
-  const { data: products, loading: ploading } = useGetDatasExper(
-    "/products",
-    "POST",
-    pids,
-    orders.length && loading === false && pids.length,
+  const [productIds, setProductsids] = useState([]);
+  const { data: products, isLoading: isProductsLoading } = useQuery(
+    ["productsFromOrder", productIds],
     {
-      s: "product,productName,price",
+      queryFn: () => exportedOrdersServise.GetProductsFromOrder(productIds),
+      select: (data) => {
+        return Object.fromEntries(
+          data.data.data.map((item, index) => {
+            return [item._id, item];
+          })
+        );
+      },
+      enabled: Boolean(productIds.length),
     }
   );
 
   return (
     <>
+      <img src={ img} alt="" />
       <PageTitle title={title} />
       <Table
         expandable={{
@@ -112,31 +118,33 @@ function Orders({ title }) {
                   ? record.dateDeliv
                   : `${record.address.city} ${record.address.shop}`}
                 <div className="flex w-full">
-                  {ploading ? (
-                      <BaseLoader
-                        circleHeight={100}
-                        circlewidth={100}
-                        height={284}
-                        width={"100%"}
-                      />
-                    ) : record.products.map((item) => {
-                    const product = products[item]
-                    return (
-                      <Link
-                        key={item}
-                        to={`/product/${product._id}`}
-                        className="w-1/4"
-                      >
-                        <ImgXHR
-                          src={product.product[0]}
-                          height={190}
-                          width={242}
-                        />
-                        <p className="h-14">{product.productName}</p>
-                        <p>Price: {product.price}</p>
-                      </Link>
-                    );
-                  })}
+                  {isProductsLoading ? (
+                    <BaseLoader
+                      circleHeight={100}
+                      circlewidth={100}
+                      height={284}
+                      width={"100%"}
+                    />
+                  ) : (
+                    record.products.map((item) => {
+                      const product = products[item];
+                      return (
+                        <Link
+                          key={item}
+                          to={`/product/${product._id}`}
+                          className="w-1/4"
+                        >
+                          <ImgXHR
+                            src={product.product[0]}
+                            height={190}
+                            width={242}
+                          />
+                          <p className="h-14">{product.productName}</p>
+                          <p>Price: {product.price}</p>
+                        </Link>
+                      );
+                    })
+                  )}
                 </div>
               </>
             );
@@ -146,25 +154,25 @@ function Orders({ title }) {
             record.products.forEach((product) => {
               set.add(product);
             });
-            setPids(Array.from(set));
+            setProductsids(Array.from(set));
           },
         }}
         bordered
         sticky
-        loading={loading}
+        loading={isOrdersLoading}
         rowKey={"_id"}
         columns={columns}
-        dataSource={orders}
+        dataSource={orders?.items}
         pagination={false}
       ></Table>
-      {loading ? (
+      {isOrdersLoading ? (
         <BaseLoader height={32} circleHeight={20} circlewidth={20} />
       ) : (
         <Pagination
           pageSize={size}
           current={page}
           onChange={handler}
-          total={length}
+          total={orders?.length}
           itemRender={itemRender}
         />
       )}

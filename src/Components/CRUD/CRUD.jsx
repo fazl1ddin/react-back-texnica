@@ -41,7 +41,7 @@ function CRUD(props) {
     <>
       <PageTitle title={props.title} />
       <Table
-        rowClassName="text-lg"
+        rowClassName="text-sm"
         expandable={{
             expandedRowRender: props.expanR && props.expanR(/*dataHook*/),
             onExpand: props.onE && props.onE(/*dataHook*/),

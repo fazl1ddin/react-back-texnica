@@ -1,4 +1,4 @@
-import { Pagination, Switch, Table } from "antd";
+import { Button, Pagination, Switch, Table } from "antd";
 import PageTitle from "../../Components/PageTitle/PageTitle";
 import useGetDatas from "../../Hooks/getDatas/useGetDatas";
 import usePagination from "../../Hooks/usePagination/usePagination";
@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import DOMPurify from "dompurify";
 import BaseLoader from "../../Components/Loaders/BaseLoader";
 import PrevNext from "../../Components/PrevNext/PrevNext";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { exportedProductsServise } from "./services/products";
 
 const specColumns = [
   {
@@ -80,16 +82,34 @@ const specColumns = [
 
 const itemRender = (disabled, type, originalElement) => {
   if (type === "prev") {
-    return <PrevNext type={type} disabled={disabled}/>;
+    return <PrevNext type={type} disabled={disabled} />;
   }
   if (type === "next") {
-    return <PrevNext type={type} disabled={disabled}/>;
+    return <PrevNext type={type} disabled={disabled} />;
   }
   return originalElement;
 };
 
 function Products() {
   const [page, size, handler] = usePagination(1, 30);
+
+  const {
+    data: products,
+    isLoading: loading,
+    refetch,
+  } = useQuery(["products", page, size], {
+    queryFn: () => exportedProductsServise.GetAll(page, size),
+    select: (data) => ({
+      items: data.data.data.items,
+      length: data.data.data.length,
+    }),
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: exportedProductsServise.UpdateKey,
+    onSuccess: () => refetch(),
+  });
+
   const columns = [
     Table.EXPAND_COLUMN,
     {
@@ -106,21 +126,54 @@ function Products() {
     },
     {
       title: "Protection",
-      dataIndex: "protection",
+      dataIndex: "",
       key: "protection",
-      render: (bool) => <Switch checked={bool} />,
+      render: (product) => (
+        <Switch
+          checked={product.protection}
+          onChange={(isChecked) =>
+            mutate({
+              product_id: product._id,
+              key: "protection",
+              value: isChecked,
+            })
+          }
+        />
+      ),
     },
     {
       title: "Hit",
-      dataIndex: "hit",
+      dataIndex: "",
       key: "hit",
-      render: (bool) => <Switch checked={bool} />,
+      render: (product) => (
+        <Switch
+          checked={product.hit}
+          onChange={(isChecked) =>
+            mutate({
+              product_id: product._id,
+              key: "hit",
+              value: isChecked,
+            })
+          }
+        />
+      ),
     },
     {
       title: "News",
-      dataIndex: "news",
+      dataIndex: "",
       key: "news",
-      render: (bool) => <Switch checked={bool} />,
+      render: (product) => (
+        <Switch
+          checked={product.news}
+          onChange={(isChecked) =>
+            mutate({
+              product_id: product._id,
+              key: "news",
+              value: isChecked,
+            })
+          }
+        />
+      ),
     },
     {
       title: "Price",
@@ -156,20 +209,18 @@ function Products() {
     },
   ];
 
-  const { data: products, loading, length } = useGetDatas(
-    "/products",
-    "GET",
-    [],
-    true,
-    {
-      p: page,
-      pp: size,
-    }
-  );
-
   return (
     <>
-      <PageTitle title={"Products"} />
+      <PageTitle
+        title={
+          <div className="flex justify-between items-center">
+            <div>Products</div>
+            <Link to={"/products/create"}>
+              <Button type="primary">+ Create</Button>
+            </Link>
+          </div>
+        }
+      />
       <Table
         expandable={{
           expandedRowRender: (record) => {
@@ -182,7 +233,12 @@ function Products() {
                   pagination={false}
                 ></Table>
                 <p className="text-2xl">{record.description.title}</p>
-                <p className="text-lg" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(record.description.content)}}/>
+                <p
+                  className="text-lg"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(record.description.content),
+                  }}
+                />
               </>
             );
           },
@@ -192,7 +248,7 @@ function Products() {
         loading={loading}
         rowKey={"_id"}
         columns={columns}
-        dataSource={products}
+        dataSource={products?.items}
         pagination={false}
       ></Table>
       {loading ? (
@@ -202,7 +258,7 @@ function Products() {
           pageSize={size}
           current={page}
           onChange={handler}
-          total={length}
+          total={products?.length}
           itemRender={itemRender}
         />
       )}

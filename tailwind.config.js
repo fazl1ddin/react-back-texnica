@@ -1,4 +1,4 @@
-const configStyles = require('./src/Config/config.styles.cjs')
+const configStyles = require('./src/Config/config.styles.js')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -17,8 +17,8 @@ module.exports = {
       colors: {
         'default': configStyles.defaultColor
       }
-    }
+    },
   },
   plugins: [],
-  important: true,
+  important: true
 }
